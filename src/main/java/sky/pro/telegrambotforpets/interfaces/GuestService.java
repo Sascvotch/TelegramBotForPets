@@ -1,7 +1,7 @@
 package sky.pro.telegrambotforpets.interfaces;
 
-import com.pengrad.telegrambot.model.Update;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.telegram.telegrambots.meta.api.objects.Update;
 
 public interface GuestService {
     /**

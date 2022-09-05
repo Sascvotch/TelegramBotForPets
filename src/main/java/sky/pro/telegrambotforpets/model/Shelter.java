@@ -1,6 +1,8 @@
 package sky.pro.telegrambotforpets.model;
 
 import javax.persistence.*;
+import java.io.Serializable;
+import java.util.Arrays;
 import java.util.Objects;
 
 /**

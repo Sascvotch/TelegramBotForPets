@@ -1,11 +1,11 @@
 package sky.pro.telegrambotforpets.services;
 
-import com.pengrad.telegrambot.model.Update;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.telegram.telegrambots.meta.api.objects.Update;
 import sky.pro.telegrambotforpets.interfaces.GuestService;
 import sky.pro.telegrambotforpets.model.Guest;
 import sky.pro.telegrambotforpets.repositories.GuestRepository;
@@ -29,8 +29,8 @@ public class GuestServiceImpl implements GuestService {
      * @return userName или Гость
      */
     public String getUserNameOfGuest(Update update) {
-        String userName = update.message().from().username();
-        String firstName = update.message().from().firstName();
+        String userName = update.getMessage().getFrom().getUserName();
+        String firstName = update.getMessage().getFrom().getFirstName();
         if (userName != null && !(userName.isEmpty() && userName.isBlank())) {
             return userName;
         } else if (firstName != null && !(firstName.isEmpty() && firstName.isBlank())) {
@@ -46,7 +46,7 @@ public class GuestServiceImpl implements GuestService {
      * @param update
      */
     public void saveGuestToDB(Update update) {
-        Long chatId = update.message().chat().id();
+        Long chatId = update.getMessage().getChatId();
         String userName = getUserNameOfGuest(update);
         Guest guest = new Guest();
         guest.setChatId(chatId);
@@ -63,7 +63,7 @@ public class GuestServiceImpl implements GuestService {
      * @see JpaRepository#findAll()
      */
     public boolean doesGuestAlreadyExistsInDB(Update update) {
-        Long chatId = update.message().chat().id();
+        Long chatId = update.getMessage().getChatId();
         logger.info("выполнился метод doesGuestAlreadyExistsInDB");
         return guestRepository.findById(chatId).isPresent();
     }
