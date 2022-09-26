@@ -76,7 +76,7 @@ public class AdopterServiceImpl implements AdopterService {
         }
 
         return false;
-    }//по номеру тел проверить есть ли chatId???
+    }
 
     /**
      * проверяет в БД гостей, есть ли гость с указанным номером телефона и если есть, то возвращает его chatId
@@ -274,9 +274,26 @@ public class AdopterServiceImpl implements AdopterService {
         }
     }
 
+    @Override
+    public Optional<Adopter> getAdopterByChatIdAndKindOfAnimal(Long chatId, KindOfAnimal kindOfAnimal) {
+        Optional<Adopter> adopter = null;
+        logger.info("метод getAdopterByChatIdAndKindOfAnimal");
+        switch (kindOfAnimal) {
+            case CATS -> {
+                return catAdoptRep.getCatAdopterByChatId(chatId);
+            }
+            case DOGS -> {
+                return dogAdoptRep.getDogAdopterByChatId(chatId);
+            }
+        }
+        logger.info("метод getAdopterByChatIdAndKindOfAnimal exit");
+        return null;
+    }
+
     /**
      * ищет по chatId в БД усыновителей и достает имя, если усыновителя с таким chatId нет, то идет в БД
      * гостей и достает гостя с таким chatId и возвращает имя
+     *
      * @param chatId
      * @return
      */
