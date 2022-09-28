@@ -49,10 +49,11 @@ public class DocumentsForPreparationServiceImpl implements DocumentsForPreparati
     public boolean saveDocumentToDB(String description, MultipartFile file, String kindOfAnimal) throws IOException {
         DocumentsForPreparation docExists =
                 documentsForPreparationRepository.findDocumentsForPreparationByDescriptionAndKindOfAnimal (description, kindOfAnimal);
+        
 
         if (docExists == null) {
 
-            Path filePath = Path.of(documentsPrepFolder, description + "." + getExtention(file));
+            Path filePath = Path.of(documentsPrepFolder, kindOfAnimal,  description + "." + getExtention(file));
 
             Files.createDirectories(filePath.getParent());
             Files.deleteIfExists(filePath);
@@ -123,7 +124,7 @@ public class DocumentsForPreparationServiceImpl implements DocumentsForPreparati
                 /**
                  * создаю новый путь
                  */
-                Path newFilePath = Path.of(documentsPrepFolder, description + "." + getExtention(file));
+                Path newFilePath = Path.of(documentsPrepFolder, kindOfAnimal, description + "." + getExtention(file));
                 /**
                  * кладу нолвый файл по новому пути
                  */

@@ -8,4 +8,6 @@ import java.util.Optional;
 public interface GuestRepository extends JpaRepository <Guest,Long> {
 
     Optional<Guest> findByPhoneNumber(String phoneNumber);
+
+    Optional<Guest> findByChatId (Long chatId);
 }

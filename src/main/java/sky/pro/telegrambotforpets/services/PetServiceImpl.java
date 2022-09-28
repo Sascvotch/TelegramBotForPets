@@ -105,7 +105,7 @@ public class PetServiceImpl implements PetService {
             case DOGS -> {
                 try {
                     Dog dog = dogRepository.findById(petId).get();
-                    logger.info("метод getPetByName - найдена собака - " + dog.getName());
+                    logger.info("метод getPetById - найдена собака - " + dog.getName());
                     return dog;
                 } catch (NoSuchElementException e) {
                     logger.info(e.toString());
@@ -315,6 +315,7 @@ public class PetServiceImpl implements PetService {
                 case DOGS -> {
                     Dog dog = (Dog) pet;
                     dog.setDogAdopter((DogAdopter) adopter);
+                    ((DogAdopter) adopter).setDog(dog);
                     logger.info("метод appointAdopter - собаке " + dog.getName() + " установлен усыновитель "
                             + adopter.getName());
                     return true;
@@ -322,6 +323,7 @@ public class PetServiceImpl implements PetService {
                 case CATS -> {
                     Cat cat = (Cat) pet;
                     cat.setCatAdopter((CatAdopter) adopter);
+                    ((CatAdopter)adopter).setCat(cat);
                     logger.info("метод appointAdopter - собаке " + cat.getName() + " установлен усыновитель "
                             + adopter.getName());
                     return true;

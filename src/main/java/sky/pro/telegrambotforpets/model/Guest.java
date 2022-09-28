@@ -4,6 +4,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.xml.transform.sax.SAXResult;
 import java.util.Objects;
 
 /**
@@ -14,7 +15,6 @@ import java.util.Objects;
 @Table(name = "guests")
 public class Guest {
     @Id
-
     private Long chatId;
     private String userName;
     private String phoneNumber;
@@ -49,6 +49,13 @@ public class Guest {
                 .replace("-", "")
                 .replace("(", "")
                 .replace(")", "");
+
+        if (phoneNumber.startsWith("7")) {
+            char[] chars = phoneNumber.toCharArray();
+            chars[0] = '8';
+            String newPhoneNumber = String.valueOf(chars);
+            this.phoneNumber = newPhoneNumber;
+        }
     }
 
     @Override

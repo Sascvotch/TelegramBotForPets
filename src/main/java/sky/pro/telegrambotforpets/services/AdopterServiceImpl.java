@@ -2,13 +2,10 @@ package sky.pro.telegrambotforpets.services;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.UnexpectedRollbackException;
 import sky.pro.telegrambotforpets.constants.Gender;
 import sky.pro.telegrambotforpets.constants.KindOfAnimal;
 import sky.pro.telegrambotforpets.interfaces.AdopterService;
-import sky.pro.telegrambotforpets.interfaces.PetService;
 import sky.pro.telegrambotforpets.model.*;
 import sky.pro.telegrambotforpets.repositories.CatAdopterRepository;
 import sky.pro.telegrambotforpets.repositories.DogAdopterRepository;
@@ -18,7 +15,6 @@ import javax.transaction.Transactional;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Collection;
-import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
@@ -80,7 +76,7 @@ public class AdopterServiceImpl implements AdopterService {
         }
 
         return false;
-    }//по номеру тел проверить есть ли chatId???
+    }
 
     /**
      * проверяет в БД гостей, есть ли гость с указанным номером телефона и если есть, то возвращает его chatId
@@ -275,6 +271,48 @@ public class AdopterServiceImpl implements AdopterService {
             return true;
         } else {
             return false;
+        }
+    }
+
+    @Override
+    public Optional<Adopter> getAdopterByChatIdAndKindOfAnimal(Long chatId, KindOfAnimal kindOfAnimal) {
+        Optional<Adopter> adopter = null;
+        logger.info("метод getAdopterByChatIdAndKindOfAnimal");
+        switch (kindOfAnimal) {
+            case CATS -> {
+                return catAdoptRep.getCatAdopterByChatId(chatId);
+            }
+            case DOGS -> {
+                return dogAdoptRep.getDogAdopterByChatId(chatId);
+            }
+        }
+        logger.info("метод getAdopterByChatIdAndKindOfAnimal exit");
+        return null;
+    }
+
+    /**
+     * ищет по chatId в БД усыновителей и достает имя, если усыновителя с таким chatId нет, то идет в БД
+     * гостей и достает гостя с таким chatId и возвращает имя
+     *
+     * @param chatId
+     * @return
+     */
+    @Override
+    public String greeting(Long chatId) {
+        Optional<DogAdopter> dogAdopter = dogAdoptRep.findByChatId(chatId);
+        Optional<CatAdopter> catAdopter = catAdoptRep.findByChatId(chatId);
+        if (dogAdopter.isPresent()) {
+            logger.info("метод greeting " + dogAdopter.get().getName());
+            return dogAdopter.get().getName();
+        } else if (catAdopter.isPresent()) {
+            return catAdopter.get().getName();
+        } else {
+            Optional<Guest> guest = guestRepository.findByChatId(chatId);
+            if (guest.isPresent()) {
+                return guest.get().getUserName();
+            } else {
+                return "Незнакомец";
+            }
         }
     }
 }
